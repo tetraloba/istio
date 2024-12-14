@@ -102,6 +102,8 @@ func (s *DiscoveryServer) pushXds(con *Connection, w *model.WatchedResource, req
 		return nil
 	}
 
+	log.Warnf("tetraloba: Hello World! pushXds() has been called for %v", con.proxy.IPAddresses[0])
+
 	t0 := time.Now()
 
 	// If delta is set, client is requesting new resources or removing old ones. We should just generate the

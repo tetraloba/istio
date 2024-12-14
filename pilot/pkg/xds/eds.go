@@ -47,6 +47,7 @@ func (s *DiscoveryServer) SvcUpdate(shard model.ShardKey, hostname string, names
 func (s *DiscoveryServer) EDSUpdate(shard model.ShardKey, serviceName string, namespace string,
 	istioEndpoints []*model.IstioEndpoint,
 ) {
+	log.Warnf("tetraloba: Hello World! EDSUpdate() has been called for %v", serviceName)
 	inboundEDSUpdates.Increment()
 	// Update the endpoint shards
 	pushType := s.Env.EndpointIndex.UpdateServiceEndpoints(shard, serviceName, namespace, istioEndpoints, true)
