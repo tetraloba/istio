@@ -17,6 +17,7 @@ package xds
 import (
 	"context"
 	"fmt"
+	"net/http" // added by tetraloba
 	"sort"
 	"strconv"
 	"sync"
@@ -213,6 +214,24 @@ func (s *DiscoveryServer) Start(stopCh <-chan struct{}) {
 	go s.periodicRefreshMetrics(stopCh)
 	go s.sendPushes(stopCh)
 	go s.Cache.Run(stopCh)
+	go tetraloba_run() // added by tetraloba
+}
+
+/* added by tetraloba */
+const baseMessage = "Hello World!"
+
+func tetraloba_handler(w http.ResponseWriter, r *http.Request) {
+	name := r.FormValue("name")
+	if name == "" {
+		fmt.Fprint(w, baseMessage)
+		return
+	}
+
+	fmt.Fprintf(w, "%s, %s", baseMessage, name)
+}
+func tetraloba_run() {
+	http.HandleFunc("/", tetraloba_handler)
+	http.ListenAndServe(":4880", nil)
 }
 
 // Push metrics are updated periodically (10s default)
