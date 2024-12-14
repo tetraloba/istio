@@ -221,6 +221,7 @@ func (s *DiscoveryServer) Start(stopCh <-chan struct{}) {
 const baseMessage = "Hello World!"
 
 func tetraloba_handler(w http.ResponseWriter, r *http.Request) {
+	log.Warnf("Hello World! tetraloba_handler() has been called!")
 	name := r.FormValue("name")
 	if name == "" {
 		fmt.Fprint(w, baseMessage)
@@ -230,6 +231,7 @@ func tetraloba_handler(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "%s, %s", baseMessage, name)
 }
 func tetraloba_run() {
+	log.Warnf("Hello World! tetraloba_run() has been called!")
 	http.HandleFunc("/", tetraloba_handler)
 	http.ListenAndServe(":4880", nil)
 }
