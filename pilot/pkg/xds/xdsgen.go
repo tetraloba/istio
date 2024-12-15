@@ -94,6 +94,7 @@ func (s *DiscoveryServer) findGenerator(typeURL string, con *Connection) model.X
 // based on the passed in generator. Based on the updates field, generators may
 // choose to send partial or even no response if there are no changes.
 func (s *DiscoveryServer) pushXds(con *Connection, w *model.WatchedResource, req *model.PushRequest) error {
+	log.Warnf("tetraloba: pushXds() has been called for %v", con.proxy.IPAddresses[0])
 	if w == nil {
 		return nil
 	}
@@ -101,8 +102,6 @@ func (s *DiscoveryServer) pushXds(con *Connection, w *model.WatchedResource, req
 	if gen == nil {
 		return nil
 	}
-
-	log.Warnf("tetraloba: Hello World! pushXds() has been called for %v", con.proxy.IPAddresses[0])
 
 	t0 := time.Now()
 

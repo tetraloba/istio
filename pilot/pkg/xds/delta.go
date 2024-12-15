@@ -40,6 +40,7 @@ import (
 var deltaLog = istiolog.RegisterScope("delta", "delta xds debugging")
 
 func (s *DiscoveryServer) StreamDeltas(stream DeltaDiscoveryStream) error {
+	log.Warnf("tetraloba: StreamDeltas() has been called")
 	if knativeEnv != "" && firstRequest.Load() {
 		// How scaling works in knative is the first request is the "loading" request. During
 		// loading request, concurrency=1. Once that request is done, concurrency is enabled.
@@ -153,6 +154,7 @@ func (s *DiscoveryServer) StreamDeltas(stream DeltaDiscoveryStream) error {
 
 // Compute and send the new configuration for a connection.
 func (s *DiscoveryServer) pushConnectionDelta(con *Connection, pushEv *Event) error {
+	log.Warnf("tetraloba: pushConnectionDelta() has been called")
 	pushRequest := pushEv.pushRequest
 
 	if pushRequest.Full {
@@ -232,6 +234,7 @@ func (s *DiscoveryServer) receiveDelta(con *Connection, identities []string) {
 }
 
 func (conn *Connection) sendDelta(res *discovery.DeltaDiscoveryResponse, newResourceNames []string) error {
+	log.Warnf("tetraloba: sendDelta() has been called")
 	sendResonse := func() error {
 		start := time.Now()
 		defer func() { xds.RecordSendTime(time.Since(start)) }()
@@ -267,6 +270,7 @@ func (conn *Connection) sendDelta(res *discovery.DeltaDiscoveryResponse, newReso
 // handles 'push' requests and close - the code will eventually call the 'push' code, and it needs more mutex
 // protection. Original code avoided the mutexes by doing both 'push' and 'process requests' in same thread.
 func (s *DiscoveryServer) processDeltaRequest(req *discovery.DeltaDiscoveryRequest, con *Connection) error {
+	log.Warnf("tetraloba: processDeltaRequest() has been called")
 	stype := v3.GetShortType(req.TypeUrl)
 	deltaLog.Debugf("ADS:%s: REQ %s resources sub:%d unsub:%d nonce:%s", stype,
 		con.ID(), len(req.ResourceNamesSubscribe), len(req.ResourceNamesUnsubscribe), req.ResponseNonce)
@@ -336,6 +340,7 @@ func (s *DiscoveryServer) processDeltaRequest(req *discovery.DeltaDiscoveryReque
 }
 
 func (s *DiscoveryServer) forceEDSPush(con *Connection) error {
+	log.Warnf("tetraloba: forceEDSPush() has been called")
 	if dwr := con.proxy.GetWatchedResource(v3.EndpointType); dwr != nil {
 		request := &model.PushRequest{
 			Full:   true,
@@ -462,6 +467,7 @@ func (s *DiscoveryServer) shouldRespondDelta(con *Connection, request *discovery
 
 // Push a Delta XDS resource for the given connection.
 func (s *DiscoveryServer) pushDeltaXds(con *Connection, w *model.WatchedResource, req *model.PushRequest) error {
+	log.Warnf("tetraloba: pushDeltaXds() has been called for %v", con.proxy.IPAddresses[0])
 	if w == nil {
 		return nil
 	}

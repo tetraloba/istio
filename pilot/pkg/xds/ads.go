@@ -180,10 +180,12 @@ func (s *DiscoveryServer) processRequest(req *discovery.DiscoveryRequest, con *C
 
 // StreamAggregatedResources implements the ADS interface.
 func (s *DiscoveryServer) StreamAggregatedResources(stream DiscoveryStream) error {
+	log.Warnf("tetraloba: StreamAggregatedResources() has been called")
 	return s.Stream(stream)
 }
 
 func (s *DiscoveryServer) Stream(stream DiscoveryStream) error {
+	log.Warnf("tetraloba: Stream() has been called")
 	if knativeEnv != "" && firstRequest.Load() {
 		// How scaling works in knative is the first request is the "loading" request. During
 		// loading request, concurrency=1. Once that request is done, concurrency is enabled.
@@ -466,6 +468,7 @@ func (s *DiscoveryServer) handleWorkloadHealthcheck(proxy *model.Proxy, req *dis
 // The delta protocol changes the request, adding unsubscribe/subscribe instead of sending full
 // list of resources. On the response it adds 'removed resources' and sends changes for everything.
 func (s *DiscoveryServer) DeltaAggregatedResources(stream discovery.AggregatedDiscoveryService_DeltaAggregatedResourcesServer) error {
+	log.Warnf("tetraloba: DeltaAggregatedResources() has been called")
 	return s.StreamDeltas(stream)
 }
 
@@ -592,6 +595,7 @@ func (s *DiscoveryServer) StartPush(req *model.PushRequest) {
 }
 
 func (s *DiscoveryServer) addCon(conID string, con *Connection) {
+	log.Warnf("tetraloba: addCon() has been called")
 	s.adsClientsMutex.Lock()
 	defer s.adsClientsMutex.Unlock()
 	s.adsClients[conID] = con

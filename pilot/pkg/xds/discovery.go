@@ -508,7 +508,7 @@ func doSendPushes(stopCh <-chan struct{}, semaphore chan struct{}, queue *PushQu
 					pushRequest: push,
 					done:        doneFunc,
 				}
-
+				log.Warnf("tetraloba: doSendPushes() call client.PushCh()")
 				select {
 				case client.PushCh() <- pushEv:
 					return
