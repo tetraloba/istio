@@ -31,6 +31,7 @@ import (
 func (s *DiscoveryServer) SvcUpdate(shard model.ShardKey, hostname string, namespace string, event model.Event) {
 	// When a service deleted, we should cleanup the endpoint shards and also remove keys from EndpointIndex to
 	// prevent memory leaks.
+	log.Warnf("tetraloba: SvcUpdate() has been called")
 	if event == model.EventDelete {
 		inboundServiceDeletes.Increment()
 		s.Env.EndpointIndex.DeleteServiceShard(shard, hostname, namespace, false)
@@ -47,7 +48,7 @@ func (s *DiscoveryServer) SvcUpdate(shard model.ShardKey, hostname string, names
 func (s *DiscoveryServer) EDSUpdate(shard model.ShardKey, serviceName string, namespace string,
 	istioEndpoints []*model.IstioEndpoint,
 ) {
-	log.Warnf("tetraloba: Hello World! EDSUpdate() has been called for %v", serviceName)
+	log.Warnf("tetraloba: EDSUpdate() has been called for %v", serviceName)
 	inboundEDSUpdates.Increment()
 	// Update the endpoint shards
 	pushType := s.Env.EndpointIndex.UpdateServiceEndpoints(shard, serviceName, namespace, istioEndpoints, true)
@@ -58,6 +59,8 @@ func (s *DiscoveryServer) EDSUpdate(shard model.ShardKey, serviceName string, na
 			ConfigsUpdated: sets.New(model.ConfigKey{Kind: kind.ServiceEntry, Name: serviceName, Namespace: namespace}),
 			Reason:         model.NewReasonStats(model.EndpointUpdate),
 		})
+	} else {
+		log.Warnf("tetraloba: NoPush selected by UpdateServiceEndpoints()")
 	}
 }
 
@@ -71,6 +74,7 @@ func (s *DiscoveryServer) EDSUpdate(shard model.ShardKey, serviceName string, na
 func (s *DiscoveryServer) EDSCacheUpdate(shard model.ShardKey, serviceName string, namespace string,
 	istioEndpoints []*model.IstioEndpoint,
 ) {
+	log.Warnf("tetraloba: EDSCacheUpdate() has been called")
 	inboundEDSUpdates.Increment()
 	// Update the endpoint shards
 	s.Env.EndpointIndex.UpdateServiceEndpoints(shard, serviceName, namespace, istioEndpoints, false)
@@ -123,6 +127,7 @@ func edsNeedsPush(updates model.XdsUpdates) bool {
 }
 
 func (eds *EdsGenerator) Generate(proxy *model.Proxy, w *model.WatchedResource, req *model.PushRequest) (model.Resources, model.XdsLogDetails, error) {
+	log.Warnf("tetrlaoba: eds.Generate() has been called")
 	if !edsNeedsPush(req.ConfigsUpdated) {
 		return nil, model.DefaultXdsLogDetails, nil
 	}
@@ -133,6 +138,7 @@ func (eds *EdsGenerator) Generate(proxy *model.Proxy, w *model.WatchedResource, 
 func (eds *EdsGenerator) GenerateDeltas(proxy *model.Proxy, req *model.PushRequest,
 	w *model.WatchedResource,
 ) (model.Resources, model.DeletedResources, model.XdsLogDetails, bool, error) {
+	log.Warnf("tetrlaoba: eds.GenerateDeltas() has been called")
 	if !edsNeedsPush(req.ConfigsUpdated) {
 		return nil, nil, model.DefaultXdsLogDetails, false, nil
 	}
@@ -176,6 +182,7 @@ func (eds *EdsGenerator) buildEndpoints(proxy *model.Proxy,
 	req *model.PushRequest,
 	w *model.WatchedResource,
 ) (model.Resources, model.XdsLogDetails) {
+	log.Warnf("tetraloba: buildEndpoints() has been called")
 	var edsUpdatedServices map[string]struct{}
 	// canSendPartialFullPushes determines if we can send a partial push (ie a subset of known CLAs).
 	// This is safe when only Services has changed, as this implies that only the CLAs for the
@@ -240,6 +247,7 @@ func (eds *EdsGenerator) buildDeltaEndpoints(proxy *model.Proxy,
 	req *model.PushRequest,
 	w *model.WatchedResource,
 ) (model.Resources, []string, model.XdsLogDetails) {
+	log.Warnf("tetraloba: buildDeltaEndpoints() has been called")
 	edsUpdatedServices := model.ConfigNamesOfKind(req.ConfigsUpdated, kind.ServiceEntry)
 	var resources model.Resources
 	var removed []string

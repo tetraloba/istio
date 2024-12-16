@@ -521,6 +521,7 @@ func (s *DiscoveryServer) adsClientCount() int {
 }
 
 func (s *DiscoveryServer) ProxyUpdate(clusterID cluster.ID, ip string) {
+	log.Warnf("tetraloba: ProxyUpdate() has been called")
 	var connection *Connection
 
 	for _, v := range s.Clients() {
@@ -561,6 +562,7 @@ func AdsPushAll(s *DiscoveryServer) {
 
 // AdsPushAll will send updates to all nodes, for a full config or incremental EDS.
 func (s *DiscoveryServer) AdsPushAll(req *model.PushRequest) {
+	log.Warnf("tetraloba: AdsPushAll() has been called")
 	if !req.Full {
 		log.Infof("XDS: Incremental Pushing ConnectedEndpoints:%d Version:%s",
 			s.adsClientCount(), req.Push.PushVersion)
