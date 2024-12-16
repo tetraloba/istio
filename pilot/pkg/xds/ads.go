@@ -581,6 +581,7 @@ func (s *DiscoveryServer) AdsPushAll(req *model.PushRequest) {
 
 // Send a signal to all connections, with a push event.
 func (s *DiscoveryServer) StartPush(req *model.PushRequest) {
+	log.Warnf("tetraloba: StartPush() has been called")
 	// Push config changes, iterating over connected envoys.
 	if log.DebugEnabled() {
 		currentlyPending := s.pushQueue.Pending()

@@ -358,6 +358,7 @@ func (s *DiscoveryServer) dropCacheForRequest(req *model.PushRequest) {
 
 // Push is called to push changes on config updates using ADS.
 func (s *DiscoveryServer) Push(req *model.PushRequest) {
+	log.Warnf("tetraloba: s.Push() has been called")
 	if !req.Full {
 		req.Push = s.globalPushContext()
 		s.dropCacheForRequest(req)
@@ -402,6 +403,7 @@ var fullPushLog = istiolog.RegisterScope("fullpush", "logs details about why Ist
 
 // ConfigUpdate implements ConfigUpdater interface, used to request pushes.
 func (s *DiscoveryServer) ConfigUpdate(req *model.PushRequest) {
+	log.Warnf("tetraloba: ConfigUpdate() has been called")
 	if features.EnableUnsafeAssertions {
 		if model.HasConfigsOfKind(req.ConfigsUpdated, kind.Service) {
 			panic("assertion failed kind.Service can not be set in ConfigKey")
