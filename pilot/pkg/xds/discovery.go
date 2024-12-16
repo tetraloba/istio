@@ -238,31 +238,33 @@ func (s *DiscoveryServer) tetraloba_debug(w http.ResponseWriter, r *http.Request
 	for conid := range s.adsClients {
 		clientids = append(clientids, s.adsClients[conid].proxy.IPAddresses[0])
 	}
+	fmt.Fprintf(w, "%v\n", clientids)
+
 	if service == "" {
-		fmt.Fprintf(w, "%v", clientids)
 		return
 	}
 	if namespace == "" {
 		namespace = "default"
 	}
-
 	shards, _ := s.Env.EndpointIndex.ShardsForService(service, namespace)
-	shard_addresses := make([][]string, 0, len(shards.Keys()))
+	fmt.Fprintf(w, "%d shards found for %v on %v:\n", len(shards.Keys()), service, namespace)
 	for _, shardkey := range shards.Keys() {
 		istioeps := shards.Shards[shardkey]
 		addresses := make([]string, 0, len(istioeps))
 		for _, istioep := range istioeps {
 			addresses = append(addresses, istioep.Addresses[0])
 		}
-		shard_addresses = append(shard_addresses, addresses)
+		fmt.Fprintf(w, "%v\n", addresses)
 	}
-	fmt.Fprintf(w, "%v\n%dshards: %v", clientids, len(shard_addresses), shard_addresses)
 }
 func (s *DiscoveryServer) tetraloba_setWeight(w http.ResponseWriter, r *http.Request) {
 	var shard model.ShardKey
 	var service string = r.FormValue("service")
 	var namespace string = r.FormValue("namespace")
 	log.Warnf("tetraloba: tetraloba_setweight() has been called for %v", service)
+	if service == "" {
+		fmt.Fprintf(w, "no service selected (%v)\n", service)
+	}
 	if namespace == "" {
 		namespace = "default"
 	}
