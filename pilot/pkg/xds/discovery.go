@@ -246,35 +246,56 @@ func (s *DiscoveryServer) tetraloba_debug(w http.ResponseWriter, r *http.Request
 	if namespace == "" {
 		namespace = "default"
 	}
-	shards, _ := s.Env.EndpointIndex.ShardsForService(service, namespace)
+	shards, ok := s.Env.EndpointIndex.ShardsForService(service, namespace)
+	if !ok {
+		fmt.Fprintf(w, "no shards found for %v on %v.", service, namespace)
+		return
+	}
 	fmt.Fprintf(w, "%d shards found for %v on %v:\n", len(shards.Keys()), service, namespace)
 	for _, shardkey := range shards.Keys() {
 		istioeps := shards.Shards[shardkey]
 		addresses := make([]string, 0, len(istioeps))
 		for _, istioep := range istioeps {
-			addresses = append(addresses, istioep.Addresses[0])
+			addresses = append(addresses, istioep.Addresses[0]+"-"+strconv.Itoa(int(istioep.LbWeight)))
 		}
 		fmt.Fprintf(w, "%v\n", addresses)
 	}
 }
 func (s *DiscoveryServer) tetraloba_setWeight(w http.ResponseWriter, r *http.Request) {
-	var shard model.ShardKey
-	var service string = r.FormValue("service")
-	var namespace string = r.FormValue("namespace")
+	var (
+		shard     model.ShardKey
+		service   string = r.FormValue("service")
+		namespace string = r.FormValue("namespace")
+		dw        string = r.FormValue("dw")
+	)
 	log.Warnf("tetraloba: tetraloba_setweight() has been called for %v", service)
 	if service == "" {
 		fmt.Fprintf(w, "no service selected (%v)\n", service)
+		return
 	}
 	if namespace == "" {
 		namespace = "default"
 	}
+	if dw == "" {
+		fmt.Fprintf(w, "you should set dummy weight value 'dw'.\n")
+		return
+	}
+	dummyWeight, err := strconv.ParseUint(dw, 0, 32)
+	if err != nil {
+		fmt.Fprintf(w, "%v", err)
+		return
+	}
 
-	shards, _ := s.Env.EndpointIndex.ShardsForService(service, namespace)
+	shards, ok := s.Env.EndpointIndex.ShardsForService(service, namespace)
+	if !ok {
+		fmt.Fprintf(w, "no shards found for %v on %v.", service, namespace)
+		return
+	}
 	for _, shardkey := range shards.Keys() {
 		istioeps := shards.Shards[shardkey]
 		// new_istioeps := make([]*model.IstioEndpoint, 0, len(istioeps))
 		for _, istioep := range istioeps {
-			istioep.LbWeight = 3
+			istioep.LbWeight = uint32(dummyWeight)
 			// new_istioeps = append(new_istioeps, )
 		}
 		s.EDSUpdate(shard, service, namespace, istioeps)
