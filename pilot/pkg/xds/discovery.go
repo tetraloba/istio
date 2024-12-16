@@ -214,25 +214,87 @@ func (s *DiscoveryServer) Start(stopCh <-chan struct{}) {
 	go s.periodicRefreshMetrics(stopCh)
 	go s.sendPushes(stopCh)
 	go s.Cache.Run(stopCh)
-	go tetraloba_run() // added by tetraloba
+	go s.tetraloba_run() // added by tetraloba
 }
 
 /* added by tetraloba */
-const baseMessage = "Hello World!"
-
 func tetraloba_handler(w http.ResponseWriter, r *http.Request) {
 	log.Warnf("Hello World! tetraloba_handler() has been called!")
 	name := r.FormValue("name")
 	if name == "" {
-		fmt.Fprint(w, baseMessage)
+		fmt.Fprint(w, "backdoor is open!\n")
 		return
 	}
 
-	fmt.Fprintf(w, "%s, %s", baseMessage, name)
+	fmt.Fprintf(w, "%s %s!\n", "backdoor is oepn for", name)
+	fmt.Fprintf(w, "this is mutiple strings output test.\n")
 }
-func tetraloba_run() {
+func (s *DiscoveryServer) tetraloba_debug(w http.ResponseWriter, r *http.Request) {
+	log.Warnf("Hello World! tetraloba_debug() has been called!")
+	service := r.FormValue("service")
+	namespace := r.FormValue("namespace")
+
+	clientids := make([]string, 0, len(s.adsClients))
+	for conid := range s.adsClients {
+		clientids = append(clientids, s.adsClients[conid].proxy.IPAddresses[0])
+	}
+	if service == "" {
+		fmt.Fprintf(w, "%v", clientids)
+		return
+	}
+	if namespace == "" {
+		namespace = "default"
+	}
+
+	shards, _ := s.Env.EndpointIndex.ShardsForService(service, namespace)
+	shard_addresses := make([][]string, 0, len(shards.Keys()))
+	for _, shardkey := range shards.Keys() {
+		istioeps := shards.Shards[shardkey]
+		addresses := make([]string, 0, len(istioeps))
+		for _, istioep := range istioeps {
+			addresses = append(addresses, istioep.Addresses[0])
+		}
+		shard_addresses = append(shard_addresses, addresses)
+	}
+	fmt.Fprintf(w, "%v\n%dshards: %v", clientids, len(shard_addresses), shard_addresses)
+}
+func (s *DiscoveryServer) tetraloba_setWeight(w http.ResponseWriter, r *http.Request) {
+	var shard model.ShardKey
+	var service string = r.FormValue("service")
+	var namespace string = r.FormValue("namespace")
+	log.Warnf("tetraloba: tetraloba_setweight() has been called for %v", service)
+	if namespace == "" {
+		namespace = "default"
+	}
+
+	shards, _ := s.Env.EndpointIndex.ShardsForService(service, namespace)
+	for _, shardkey := range shards.Keys() {
+		istioeps := shards.Shards[shardkey]
+		// new_istioeps := make([]*model.IstioEndpoint, 0, len(istioeps))
+		for _, istioep := range istioeps {
+			istioep.LbWeight = 3
+			// new_istioeps = append(new_istioeps, )
+		}
+		s.EDSUpdate(shard, service, namespace, istioeps)
+	}
+	/* memo from EDSUpdate()*/
+	// inboundEDSUpdates.Increment()
+	// // Update the endpoint shards
+	// pushType := s.Env.EndpointIndex.UpdateServiceEndpoints(shard, service, namespace, istioEndpoints, true)
+	// if pushType == model.IncrementalPush || pushType == model.FullPush {
+	// 	// Trigger a push
+	// 	s.ConfigUpdate(&model.PushRequest{
+	// 		Full:           pushType == model.FullPush,
+	// 		ConfigsUpdated: sets.New(model.ConfigKey{Kind: kind.ServiceEntry, Name: service, Namespace: namespace}),
+	// 		Reason:         model.NewReasonStats(model.EndpointUpdate),
+	// 	})
+	// }
+}
+func (s *DiscoveryServer) tetraloba_run() {
 	log.Warnf("Hello World! tetraloba_run() has been called!")
 	http.HandleFunc("/", tetraloba_handler)
+	http.HandleFunc("/debug", s.tetraloba_debug)
+	http.HandleFunc("/set", s.tetraloba_setWeight)
 	http.ListenAndServe(":4880", nil)
 }
 
