@@ -301,6 +301,7 @@ func (s *DiscoveryServer) tetraloba_setWeight(w http.ResponseWriter, r *http.Req
 			// new_istioeps := make([]*model.IstioEndpoint, 0, len(istioeps))
 			for _, istioep := range istioeps {
 				istioep.LbWeight = uint32(dummyWeight)
+				// ↑正規のUpdateServiceEndpoints()を呼び出していないので、Cacheとかで問題起こる可能性大
 				// new_istioeps = append(new_istioeps, )
 			}
 			s.ConfigUpdate(&model.PushRequest{
