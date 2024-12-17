@@ -264,7 +264,6 @@ func (s *DiscoveryServer) tetraloba_debug(w http.ResponseWriter, r *http.Request
 }
 func (s *DiscoveryServer) tetraloba_setWeight(w http.ResponseWriter, r *http.Request) {
 	var (
-		shard     model.ShardKey
 		service   string = r.FormValue("service")
 		namespace string = r.FormValue("namespace")
 		dw        string = r.FormValue("dw")
@@ -320,7 +319,7 @@ func (s *DiscoveryServer) tetraloba_setWeight(w http.ResponseWriter, r *http.Req
 				new_istioep.LbWeight = uint32(dummyWeight)
 				new_istioeps = append(new_istioeps, new_istioep)
 			}
-			s.EDSUpdate(shard, service, namespace, new_istioeps)
+			s.EDSUpdate(shardkey, service, namespace, new_istioeps)
 		}
 	}
 }
