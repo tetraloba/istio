@@ -39,6 +39,7 @@ import (
 	"istio.io/istio/pkg/maps"
 	"istio.io/istio/pkg/security"
 	"istio.io/istio/pkg/slices"
+	"istio.io/istio/pkg/util/sets"
 )
 
 var periodicRefreshMetrics = 10 * time.Second
@@ -291,27 +292,36 @@ func (s *DiscoveryServer) tetraloba_setWeight(w http.ResponseWriter, r *http.Req
 		fmt.Fprintf(w, "no shards found for %v on %v.", service, namespace)
 		return
 	}
-	for _, shardkey := range shards.Keys() {
-		istioeps := shards.Shards[shardkey]
-		// new_istioeps := make([]*model.IstioEndpoint, 0, len(istioeps))
-		for _, istioep := range istioeps {
-			istioep.LbWeight = uint32(dummyWeight)
-			// new_istioeps = append(new_istioeps, )
+	if false {
+		/* 参照ver. (コスト軽いとは思うが、排他処理しないと不味くない？) */
+		for _, shardkey := range shards.Keys() {
+			/* memo from EDSUpdate()*/
+			// inboundEDSUpdates.Increment() // やらなくて良いのか？ #todo
+			istioeps := shards.Shards[shardkey]
+			// new_istioeps := make([]*model.IstioEndpoint, 0, len(istioeps))
+			for _, istioep := range istioeps {
+				istioep.LbWeight = uint32(dummyWeight)
+				// new_istioeps = append(new_istioeps, )
+			}
+			s.ConfigUpdate(&model.PushRequest{
+				Full:           false,
+				ConfigsUpdated: sets.New(model.ConfigKey{Kind: kind.ServiceEntry, Name: service, Namespace: namespace}),
+				Reason:         model.NewReasonStats(model.EndpointUpdate),
+			})
 		}
-		s.EDSUpdate(shard, service, namespace, istioeps)
+	} else {
+		/* deep copy ver. */
+		for _, shardkey := range shards.Keys() {
+			istioeps := shards.Shards[shardkey]
+			new_istioeps := make([]*model.IstioEndpoint, 0, len(istioeps))
+			for _, istioep := range istioeps {
+				new_istioep := istioep.DeepCopy()
+				new_istioep.LbWeight = uint32(dummyWeight)
+				new_istioeps = append(new_istioeps, new_istioep)
+			}
+			s.EDSUpdate(shard, service, namespace, new_istioeps)
+		}
 	}
-	/* memo from EDSUpdate()*/
-	// inboundEDSUpdates.Increment()
-	// // Update the endpoint shards
-	// pushType := s.Env.EndpointIndex.UpdateServiceEndpoints(shard, service, namespace, istioEndpoints, true)
-	// if pushType == model.IncrementalPush || pushType == model.FullPush {
-	// 	// Trigger a push
-	// 	s.ConfigUpdate(&model.PushRequest{
-	// 		Full:           pushType == model.FullPush,
-	// 		ConfigsUpdated: sets.New(model.ConfigKey{Kind: kind.ServiceEntry, Name: service, Namespace: namespace}),
-	// 		Reason:         model.NewReasonStats(model.EndpointUpdate),
-	// 	})
-	// }
 }
 func (s *DiscoveryServer) tetraloba_run() {
 	log.Warnf("Hello World! tetraloba_run() has been called!")
