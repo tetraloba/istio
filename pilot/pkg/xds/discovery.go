@@ -235,11 +235,11 @@ func (s *DiscoveryServer) tetraloba_debug(w http.ResponseWriter, r *http.Request
 	service := r.FormValue("service")
 	namespace := r.FormValue("namespace")
 
-	clientids := make([]string, 0, len(s.adsClients))
+	fmt.Fprintf(w, "ADS Clients:")
 	for conid := range s.adsClients {
-		clientids = append(clientids, s.adsClients[conid].proxy.IPAddresses[0])
+		proxy := s.adsClients[conid].proxy
+		fmt.Fprintf(w, "\t%s\n\t\t%s\n\t\t%s\n", proxy.IPAddresses[0], proxy.ID, proxy.XdsNode.Id)
 	}
-	fmt.Fprintf(w, "%v\n", clientids)
 
 	if service == "" {
 		return
