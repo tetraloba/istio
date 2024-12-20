@@ -15,8 +15,12 @@
 package endpoints
 
 import (
+	"encoding/json"
+	"fmt"
 	"math"
 	"net"
+	"net/http"
+	"net/url"
 	"sort"
 	"strconv"
 	"strings"
@@ -391,6 +395,35 @@ func (b *EndpointBuilder) BuildClusterLoadAssignment(endpointIndex *model.Endpoi
 	return l
 }
 
+/* added by tetraloba */
+func getWeightMap(apiServerIP string, apiServerPort int, sourceNodeId string, destCluster string) (map[string]uint32, error) {
+	u, err := url.Parse(apiServerIP + ":" + strconv.Itoa(apiServerPort) + "/get")
+	if err != nil {
+		return nil, fmt.Errorf("url parse error: %w", err)
+	}
+
+	q := u.Query()
+	q.Set("source", sourceNodeId)
+	q.Set("cluster", destCluster)
+	u.RawQuery = q.Encode()
+
+	res, err := http.Get(u.String())
+	if err != nil {
+		return nil, fmt.Errorf("http get error: %w", err)
+	}
+	defer res.Body.Close()
+	if res.StatusCode != http.StatusOK {
+		return nil, fmt.Errorf("response error: %s", res.Status)
+	}
+
+	var weightMap map[string]uint32
+	err = json.NewDecoder(res.Body).Decode(&weightMap)
+	if err != nil {
+		return nil, fmt.Errorf("json decode error: %w", err)
+	}
+	return weightMap, nil
+}
+
 // generate endpoints with applies weights, multi-network mapping and other filtering
 func (b *EndpointBuilder) generate(eps []*model.IstioEndpoint, toServiceWaypoint bool) []*LocalityEndpoints {
 	// shouldn't happen here
@@ -402,10 +435,32 @@ func (b *EndpointBuilder) generate(eps []*model.IstioEndpoint, toServiceWaypoint
 		return b.filterIstioEndpoint(ep)
 	})
 
+	/* added by tetraloba */
+	rcs_weight := true
+	weightMap, err := getWeightMap("rcs.default.svc.cluster.local", 4880, b.proxy.XdsNode.GetId(), b.clusterName)
+	if err != nil {
+		log.Errorf("tetraloba: An error occurred while retrieving the weightMap: %w", err)
+		rcs_weight = false
+	}
+
 	localityEpMap := make(map[string]*LocalityEndpoints)
 	for _, ep := range eps {
 		mtlsEnabled := b.mtlsChecker.checkMtlsEnabled(ep, b.proxy.IsWaypointProxy())
 		eep := buildEnvoyLbEndpoint(b, ep, mtlsEnabled, toServiceWaypoint)
+
+		/* added by tetraloba */
+		if rcs_weight {
+			if weight, ok := weightMap[ep.Addresses[0]]; ok {
+				eep.GetLoadBalancingWeight().Value = weight
+			} else {
+				if weight, ok := weightMap[""]; ok {
+					eep.GetLoadBalancingWeight().Value = weight // default value
+				} else {
+					log.Errorf("tetraloba: weight for %s not found and default value not set.", ep.Addresses[0])
+				}
+			}
+		}
+
 		if eep == nil {
 			continue
 		}
