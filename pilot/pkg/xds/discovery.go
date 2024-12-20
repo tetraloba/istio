@@ -235,7 +235,7 @@ func (s *DiscoveryServer) tetraloba_debug(w http.ResponseWriter, r *http.Request
 	service := r.FormValue("service")
 	namespace := r.FormValue("namespace")
 
-	fmt.Fprintf(w, "ADS Clients:")
+	fmt.Fprintf(w, "ADS Clients:\n")
 	for conid := range s.adsClients {
 		proxy := s.adsClients[conid].proxy
 		fmt.Fprintf(w, "\t%s\n\t\t%s\n\t\t%s\n", proxy.IPAddresses[0], proxy.ID, proxy.XdsNode.Id)
