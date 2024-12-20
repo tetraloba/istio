@@ -397,7 +397,7 @@ func (b *EndpointBuilder) BuildClusterLoadAssignment(endpointIndex *model.Endpoi
 
 /* added by tetraloba */
 func getWeightMap(apiServerIP string, apiServerPort int, sourceNodeId string, destCluster string) (map[string]uint32, error) {
-	u, err := url.Parse(apiServerIP + ":" + strconv.Itoa(apiServerPort) + "/get")
+	u, err := url.Parse("https://" + apiServerIP + ":" + strconv.Itoa(apiServerPort) + "/get")
 	if err != nil {
 		return nil, fmt.Errorf("url parse error: %w", err)
 	}
