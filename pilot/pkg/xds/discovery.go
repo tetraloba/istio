@@ -268,7 +268,7 @@ func (s *DiscoveryServer) tetraloba_setWeight(w http.ResponseWriter, r *http.Req
 		namespace string = r.FormValue("namespace")
 		dw        string = r.FormValue("dw")
 	)
-	log.Warnf("tetraloba: tetraloba_setweight() has been called for %v -> %d", service, dw)
+	log.Warnf("tetraloba: tetraloba_setweight() has been called for %s -> %s", service, dw)
 	if service == "" {
 		fmt.Fprintf(w, "no service selected (%v)\n", service)
 		return
