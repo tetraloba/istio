@@ -456,8 +456,7 @@ func (b *EndpointBuilder) generate(eps []*model.IstioEndpoint, toServiceWaypoint
 				if weight, ok := weightMap[""]; ok {
 					eep.GetLoadBalancingWeight().Value = weight // default value
 				} else {
-					log.Errorf("tetraloba: weight for %s not found and default value not set.", ep.Addresses[0])
-					// when rcs api don't have the information of the cluster, this error will occur. #todo
+					// Ignore because it is outside the management of RCS.
 				}
 			}
 		}

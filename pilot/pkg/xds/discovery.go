@@ -231,9 +231,9 @@ func tetraloba_handler(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "this is mutiple strings output test.\n")
 }
 func (s *DiscoveryServer) tetraloba_debug(w http.ResponseWriter, r *http.Request) {
-	log.Warnf("Hello World! tetraloba_debug() has been called!")
 	service := r.FormValue("service")
 	namespace := r.FormValue("namespace")
+	log.Warnf("tetraloba: tetraloba_debug() has been called for '%s' on '%s'", service, namespace)
 
 	fmt.Fprintf(w, "ADS Clients:\n")
 	for conid := range s.adsClients {
@@ -268,7 +268,7 @@ func (s *DiscoveryServer) tetraloba_setWeight(w http.ResponseWriter, r *http.Req
 		namespace string = r.FormValue("namespace")
 		dw        string = r.FormValue("dw")
 	)
-	log.Warnf("tetraloba: tetraloba_setweight() has been called for %v", service)
+	log.Warnf("tetraloba: tetraloba_setweight() has been called for %v -> %d", service, dw)
 	if service == "" {
 		fmt.Fprintf(w, "no service selected (%v)\n", service)
 		return
@@ -324,7 +324,7 @@ func (s *DiscoveryServer) tetraloba_setWeight(w http.ResponseWriter, r *http.Req
 	}
 }
 func (s *DiscoveryServer) tetraloba_run() {
-	log.Warnf("Hello World! tetraloba_run() has been called!")
+	log.Warnf("tetraloba: tetraloba_run() has been called!")
 	http.HandleFunc("/", tetraloba_handler)
 	http.HandleFunc("/debug", s.tetraloba_debug)
 	http.HandleFunc("/set", s.tetraloba_setWeight)
@@ -368,7 +368,7 @@ func (s *DiscoveryServer) dropCacheForRequest(req *model.PushRequest) {
 
 // Push is called to push changes on config updates using ADS.
 func (s *DiscoveryServer) Push(req *model.PushRequest) {
-	log.Warnf("tetraloba: s.Push() has been called")
+	// log.Warnf("tetraloba: s.Push() has been called")
 	if !req.Full {
 		req.Push = s.globalPushContext()
 		s.dropCacheForRequest(req)
@@ -413,7 +413,7 @@ var fullPushLog = istiolog.RegisterScope("fullpush", "logs details about why Ist
 
 // ConfigUpdate implements ConfigUpdater interface, used to request pushes.
 func (s *DiscoveryServer) ConfigUpdate(req *model.PushRequest) {
-	log.Warnf("tetraloba: ConfigUpdate() has been called")
+	// log.Warnf("tetraloba: ConfigUpdate() has been called")
 	if features.EnableUnsafeAssertions {
 		if model.HasConfigsOfKind(req.ConfigsUpdated, kind.Service) {
 			panic("assertion failed kind.Service can not be set in ConfigKey")
@@ -605,7 +605,7 @@ func doSendPushes(stopCh <-chan struct{}, semaphore chan struct{}, queue *PushQu
 					pushRequest: push,
 					done:        doneFunc,
 				}
-				log.Warnf("tetraloba: doSendPushes() call client.PushCh()")
+				// log.Warnf("tetraloba: doSendPushes() call client.PushCh()")
 				select {
 				case client.PushCh() <- pushEv:
 					return

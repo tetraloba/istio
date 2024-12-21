@@ -180,12 +180,12 @@ func (s *DiscoveryServer) processRequest(req *discovery.DiscoveryRequest, con *C
 
 // StreamAggregatedResources implements the ADS interface.
 func (s *DiscoveryServer) StreamAggregatedResources(stream DiscoveryStream) error {
-	log.Warnf("tetraloba: StreamAggregatedResources() has been called")
+	// log.Warnf("tetraloba: StreamAggregatedResources() has been called")
 	return s.Stream(stream)
 }
 
 func (s *DiscoveryServer) Stream(stream DiscoveryStream) error {
-	log.Warnf("tetraloba: Stream() has been called")
+	// log.Warnf("tetraloba: Stream() has been called")
 	if knativeEnv != "" && firstRequest.Load() {
 		// How scaling works in knative is the first request is the "loading" request. During
 		// loading request, concurrency=1. Once that request is done, concurrency is enabled.
@@ -468,7 +468,7 @@ func (s *DiscoveryServer) handleWorkloadHealthcheck(proxy *model.Proxy, req *dis
 // The delta protocol changes the request, adding unsubscribe/subscribe instead of sending full
 // list of resources. On the response it adds 'removed resources' and sends changes for everything.
 func (s *DiscoveryServer) DeltaAggregatedResources(stream discovery.AggregatedDiscoveryService_DeltaAggregatedResourcesServer) error {
-	log.Warnf("tetraloba: DeltaAggregatedResources() has been called")
+	// log.Warnf("tetraloba: DeltaAggregatedResources() has been called")
 	return s.StreamDeltas(stream)
 }
 
@@ -521,7 +521,7 @@ func (s *DiscoveryServer) adsClientCount() int {
 }
 
 func (s *DiscoveryServer) ProxyUpdate(clusterID cluster.ID, ip string) {
-	log.Warnf("tetraloba: ProxyUpdate() has been called")
+	// log.Warnf("tetraloba: ProxyUpdate() has been called")
 	var connection *Connection
 
 	for _, v := range s.Clients() {
@@ -562,7 +562,7 @@ func AdsPushAll(s *DiscoveryServer) {
 
 // AdsPushAll will send updates to all nodes, for a full config or incremental EDS.
 func (s *DiscoveryServer) AdsPushAll(req *model.PushRequest) {
-	log.Warnf("tetraloba: AdsPushAll() has been called")
+	// log.Warnf("tetraloba: AdsPushAll() has been called")
 	if !req.Full {
 		log.Infof("XDS: Incremental Pushing ConnectedEndpoints:%d Version:%s",
 			s.adsClientCount(), req.Push.PushVersion)
@@ -583,7 +583,7 @@ func (s *DiscoveryServer) AdsPushAll(req *model.PushRequest) {
 
 // Send a signal to all connections, with a push event.
 func (s *DiscoveryServer) StartPush(req *model.PushRequest) {
-	log.Warnf("tetraloba: StartPush() has been called")
+	// log.Warnf("tetraloba: StartPush() has been called")
 	// Push config changes, iterating over connected envoys.
 	if log.DebugEnabled() {
 		currentlyPending := s.pushQueue.Pending()
@@ -598,7 +598,7 @@ func (s *DiscoveryServer) StartPush(req *model.PushRequest) {
 }
 
 func (s *DiscoveryServer) addCon(conID string, con *Connection) {
-	log.Warnf("tetraloba: addCon() has been called")
+	// log.Warnf("tetraloba: addCon() has been called")
 	s.adsClientsMutex.Lock()
 	defer s.adsClientsMutex.Unlock()
 	s.adsClients[conID] = con
