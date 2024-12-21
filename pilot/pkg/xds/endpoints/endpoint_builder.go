@@ -437,7 +437,8 @@ func (b *EndpointBuilder) generate(eps []*model.IstioEndpoint, toServiceWaypoint
 
 	/* added by tetraloba */
 	rcs_weight := true
-	weightMap, err := getWeightMap("rcs.default.svc.cluster.local", 4880, b.proxy.XdsNode.GetId(), b.clusterName)
+	// host and port hardcoding! #todo
+	weightMap, err := getWeightMap("rcs.istio-system.svc.cluster.local", 4880, b.proxy.XdsNode.GetId(), b.clusterName)
 	if err != nil {
 		log.Errorf("tetraloba: An error occurred while retrieving the weightMap: %w", err)
 		rcs_weight = false
