@@ -199,13 +199,13 @@ func (eds *EdsGenerator) buildEndpoints(proxy *model.Proxy,
 	regenerated := 0
 
 	/* added by tetraloba for debug */
-	keys := make([]string, 0, len(edsUpdatedServices))
-	if edsUpdatedServices != nil {
-		for k := range edsUpdatedServices {
-			keys = append(keys, k)
-		}
-	}
-	log.Warnf("tetraloba: %s needs update %v", proxy.XdsNode.Id, keys)
+	// keys := make([]string, 0, len(edsUpdatedServices))
+	// if edsUpdatedServices != nil {
+	// 	for k := range edsUpdatedServices {
+	// 		keys = append(keys, k)
+	// 	}
+	// }
+	// log.Warnf("tetraloba: %s needs update %v", proxy.XdsNode.Id, keys)
 
 	for _, clusterName := range w.ResourceNames {
 		if edsUpdatedServices != nil {
@@ -217,16 +217,17 @@ func (eds *EdsGenerator) buildEndpoints(proxy *model.Proxy,
 		}
 		builder := endpoints.NewEndpointBuilder(clusterName, proxy, req.Push)
 
-		// We skip cache if assertions are enabled, so that the cache will assert our eviction logic is correct
-		if !features.EnableUnsafeAssertions {
-			cachedEndpoint := eds.Cache.Get(&builder)
-			if cachedEndpoint != nil {
-				resources = append(resources, cachedEndpoint)
-				cached++
-				log.Warnf("tetraloba: %s skipped %s because of cache!", proxy.XdsNode.Id, clusterName)
-				continue
-			}
-		}
+		// comment out by teraloba. disable Cache!!
+		// // We skip cache if assertions are enabled, so that the cache will assert our eviction logic is correct
+		// if !features.EnableUnsafeAssertions {
+		// 	cachedEndpoint := eds.Cache.Get(&builder)
+		// 	if cachedEndpoint != nil {
+		// 		resources = append(resources, cachedEndpoint)
+		// 		cached++
+		// 		log.Warnf("tetraloba: %s skipped %s because of cache!", proxy.XdsNode.Id, clusterName)
+		// 		continue
+		// 	}
+		// }
 
 		// generate eds from beginning
 		{
@@ -244,7 +245,8 @@ func (eds *EdsGenerator) buildEndpoints(proxy *model.Proxy,
 				Resource: protoconv.MessageToAny(l),
 			}
 			resources = append(resources, resource)
-			eds.Cache.Add(&builder, req, resource)
+			// comment out by teraloba. disable Cache!!
+			// eds.Cache.Add(&builder, req, resource)
 		}
 	}
 	return resources, model.XdsLogDetails{
