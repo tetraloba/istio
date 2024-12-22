@@ -138,7 +138,7 @@ func (eds *EdsGenerator) Generate(proxy *model.Proxy, w *model.WatchedResource, 
 func (eds *EdsGenerator) GenerateDeltas(proxy *model.Proxy, req *model.PushRequest,
 	w *model.WatchedResource,
 ) (model.Resources, model.DeletedResources, model.XdsLogDetails, bool, error) {
-	log.Warnf("tetrlaoba: eds.GenerateDeltas() has been called")
+	log.Warnf("tetraloba: eds.GenerateDeltas() has been called")
 	if !edsNeedsPush(req.ConfigsUpdated) {
 		return nil, nil, model.DefaultXdsLogDetails, false, nil
 	}
