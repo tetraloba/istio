@@ -197,6 +197,16 @@ func (eds *EdsGenerator) buildEndpoints(proxy *model.Proxy,
 	empty := 0
 	cached := 0
 	regenerated := 0
+
+	/* added by tetraloba for debug */
+	keys := make([]string, 0, len(edsUpdatedServices))
+	if edsUpdatedServices != nil {
+		for k := range edsUpdatedServices {
+			keys = append(keys, k)
+		}
+	}
+	log.Warnf("tetraloba: %s needs update %v", proxy.XdsNode.Id, keys)
+
 	for _, clusterName := range w.ResourceNames {
 		if edsUpdatedServices != nil {
 			if _, ok := edsUpdatedServices[model.ParseSubsetKeyHostname(clusterName)]; !ok {
@@ -213,6 +223,7 @@ func (eds *EdsGenerator) buildEndpoints(proxy *model.Proxy,
 			if cachedEndpoint != nil {
 				resources = append(resources, cachedEndpoint)
 				cached++
+				log.Warnf("tetraloba: %s skipped %s because of cache!", proxy.XdsNode.Id, clusterName)
 				continue
 			}
 		}
