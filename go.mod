@@ -225,3 +225,5 @@ require (
 	sigs.k8s.io/kustomize/kyaml v0.18.1 // indirect
 	sigs.k8s.io/structured-merge-diff/v4 v4.7.0 // indirect
 )
+
+replace github.com/envoyproxy/go-control-plane => github.com/tetraloba/go-control-plane v0.0.0-20251007200547-73aac0dd1990cb7c67d2084a88d4ae02ba6639d4
