@@ -227,3 +227,4 @@ require (
 )
 
 replace github.com/envoyproxy/go-control-plane => github.com/tetraloba/go-control-plane v0.0.0-20251007111229-73aac0dd1990
+replace istio.io/api => github.com/tetraloba/istio-api v1.26.2-0.20251010081513-98039a89bdfc
