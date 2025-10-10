@@ -230,4 +230,4 @@ replace github.com/envoyproxy/go-control-plane => github.com/tetraloba/go-contro
 
 replace github.com/envoyproxy/go-control-plane/envoy => github.com/tetraloba/go-control-plane/envoy v0.0.0-20251007111229-73aac0dd1990
 
-replace istio.io/api => github.com/tetraloba/istio-api v0.0.0-20251010081513-98039a89bdfc
+replace istio.io/api => github.com/tetraloba/api v0.0.0-20251010135826-e00da2b78b93
