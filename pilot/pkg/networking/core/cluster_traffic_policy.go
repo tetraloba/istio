@@ -261,6 +261,8 @@ func applyLoadBalancer(
 	// nolint: staticcheck
 	case networking.LoadBalancerSettings_LEAST_CONN, networking.LoadBalancerSettings_LEAST_REQUEST:
 		applyLeastRequestLoadBalancer(c, lb)
+	case networking.LoadBalancerSettings_LEAST_RESPONSE_TIME:
+		applyLeastResponseTimeLoadBalancer(c, lb)
 	case networking.LoadBalancerSettings_RANDOM:
 		c.LbPolicy = cluster.Cluster_RANDOM
 	case networking.LoadBalancerSettings_ROUND_ROBIN:
@@ -354,6 +356,28 @@ func applyLeastRequestLoadBalancer(c *cluster.Cluster, loadbalancer *networking.
 	case loadbalancer.GetWarmupDurationSecs() != nil:
 		c.LbConfig = &cluster.Cluster_LeastRequestLbConfig_{
 			LeastRequestLbConfig: &cluster.Cluster_LeastRequestLbConfig{
+				SlowStartConfig: setSlowStartConfig(loadbalancer.GetWarmupDurationSecs()),
+			},
+		}
+	}
+}
+
+// applyLeastResponseTimeLoadBalancer will set the LbPolicy and create an LbConfig for LEAST_RESPONSE_TIME if used in LoadBalancerSettings
+func applyLeastResponseTimeLoadBalancer(c *cluster.Cluster, loadbalancer *networking.LoadBalancerSettings) {
+	c.LbPolicy = cluster.Cluster_LEAST_RESPONSE_TIME
+
+	switch {
+	case loadbalancer.GetWarmup() != nil:
+		c.LbConfig = &cluster.Cluster_LeastResponseTimeLbConfig_{
+			LeastResponseTimeLbConfig: &cluster.Cluster_LeastResponseTimeLbConfig{
+				SlowStartConfig: setWarmup(loadbalancer.GetWarmup()),
+			},
+		}
+
+	// Deprecated: uses setWarmup instead
+	case loadbalancer.GetWarmupDurationSecs() != nil:
+		c.LbConfig = &cluster.Cluster_LeastResponseTimeLbConfig_{
+			LeastResponseTimeLbConfig: &cluster.Cluster_LeastResponseTimeLbConfig{
 				SlowStartConfig: setSlowStartConfig(loadbalancer.GetWarmupDurationSecs()),
 			},
 		}
