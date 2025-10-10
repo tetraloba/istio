@@ -53,7 +53,7 @@ require (
 	github.com/planetscale/vtprotobuf v0.6.1-0.20240409071808-615f978279ca
 	github.com/pmezard/go-difflib v1.0.1-0.20181226105442-5d4384ee4fb2
 	github.com/prometheus/client_golang v1.21.1
-	github.com/prometheus/client_model v0.6.1
+	github.com/prometheus/client_model v0.6.2
 	github.com/prometheus/common v0.62.0
 	github.com/prometheus/procfs v0.15.1
 	github.com/prometheus/prometheus v0.302.1
@@ -227,5 +227,7 @@ require (
 )
 
 replace github.com/envoyproxy/go-control-plane => github.com/tetraloba/go-control-plane v0.0.0-20251007111229-73aac0dd1990
+
 replace github.com/envoyproxy/go-control-plane/envoy => github.com/tetraloba/go-control-plane/envoy v0.0.0-20251007111229-73aac0dd1990
+
 replace istio.io/api => github.com/tetraloba/istio-api v1.26.2-0.20251010081513-98039a89bdfc
