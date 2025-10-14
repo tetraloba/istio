@@ -691,7 +691,7 @@ spec:
                               description: |2-
 
 
-                                Valid Options: LEAST_CONN, RANDOM, PASSTHROUGH, ROUND_ROBIN, LEAST_REQUEST
+                                Valid Options: LEAST_CONN, RANDOM, PASSTHROUGH, ROUND_ROBIN, LEAST_REQUEST, LEAST_RESPONSE_TIME
                               enum:
                               - UNSPECIFIED
                               - LEAST_CONN
@@ -699,6 +699,7 @@ spec:
                               - PASSTHROUGH
                               - ROUND_ROBIN
                               - LEAST_REQUEST
+                              - LEAST_RESPONSE_TIME
                               type: string
                             warmup:
                               description: Represents the warmup configuration of
@@ -1057,7 +1058,7 @@ spec:
                                     description: |2-
 
 
-                                      Valid Options: LEAST_CONN, RANDOM, PASSTHROUGH, ROUND_ROBIN, LEAST_REQUEST
+                                      Valid Options: LEAST_CONN, RANDOM, PASSTHROUGH, ROUND_ROBIN, LEAST_REQUEST, LEAST_RESPONSE_TIME
                                     enum:
                                     - UNSPECIFIED
                                     - LEAST_CONN
@@ -1065,6 +1066,7 @@ spec:
                                     - PASSTHROUGH
                                     - ROUND_ROBIN
                                     - LEAST_REQUEST
+                                    - LEAST_RESPONSE_TIME
                                     type: string
                                   warmup:
                                     description: Represents the warmup configuration
@@ -1572,7 +1574,7 @@ spec:
                         description: |2-
 
 
-                          Valid Options: LEAST_CONN, RANDOM, PASSTHROUGH, ROUND_ROBIN, LEAST_REQUEST
+                          Valid Options: LEAST_CONN, RANDOM, PASSTHROUGH, ROUND_ROBIN, LEAST_REQUEST, LEAST_RESPONSE_TIME
                         enum:
                         - UNSPECIFIED
                         - LEAST_CONN
@@ -1580,6 +1582,7 @@ spec:
                         - PASSTHROUGH
                         - ROUND_ROBIN
                         - LEAST_REQUEST
+                        - LEAST_RESPONSE_TIME
                         type: string
                       warmup:
                         description: Represents the warmup configuration of Service.
@@ -1930,7 +1933,7 @@ spec:
                               description: |2-
 
 
-                                Valid Options: LEAST_CONN, RANDOM, PASSTHROUGH, ROUND_ROBIN, LEAST_REQUEST
+                                Valid Options: LEAST_CONN, RANDOM, PASSTHROUGH, ROUND_ROBIN, LEAST_REQUEST, LEAST_RESPONSE_TIME
                               enum:
                               - UNSPECIFIED
                               - LEAST_CONN
@@ -1938,6 +1941,7 @@ spec:
                               - PASSTHROUGH
                               - ROUND_ROBIN
                               - LEAST_REQUEST
+                              - LEAST_RESPONSE_TIME
                               type: string
                             warmup:
                               description: Represents the warmup configuration of
@@ -2590,7 +2594,7 @@ spec:
                               description: |2-
 
 
-                                Valid Options: LEAST_CONN, RANDOM, PASSTHROUGH, ROUND_ROBIN, LEAST_REQUEST
+                                Valid Options: LEAST_CONN, RANDOM, PASSTHROUGH, ROUND_ROBIN, LEAST_REQUEST, LEAST_RESPONSE_TIME
                               enum:
                               - UNSPECIFIED
                               - LEAST_CONN
@@ -2598,6 +2602,7 @@ spec:
                               - PASSTHROUGH
                               - ROUND_ROBIN
                               - LEAST_REQUEST
+                              - LEAST_RESPONSE_TIME
                               type: string
                             warmup:
                               description: Represents the warmup configuration of
@@ -2956,7 +2961,7 @@ spec:
                                     description: |2-
 
 
-                                      Valid Options: LEAST_CONN, RANDOM, PASSTHROUGH, ROUND_ROBIN, LEAST_REQUEST
+                                      Valid Options: LEAST_CONN, RANDOM, PASSTHROUGH, ROUND_ROBIN, LEAST_REQUEST, LEAST_RESPONSE_TIME
                                     enum:
                                     - UNSPECIFIED
                                     - LEAST_CONN
@@ -2964,6 +2969,7 @@ spec:
                                     - PASSTHROUGH
                                     - ROUND_ROBIN
                                     - LEAST_REQUEST
+                                    - LEAST_RESPONSE_TIME
                                     type: string
                                   warmup:
                                     description: Represents the warmup configuration
@@ -3471,7 +3477,7 @@ spec:
                         description: |2-
 
 
-                          Valid Options: LEAST_CONN, RANDOM, PASSTHROUGH, ROUND_ROBIN, LEAST_REQUEST
+                          Valid Options: LEAST_CONN, RANDOM, PASSTHROUGH, ROUND_ROBIN, LEAST_REQUEST, LEAST_RESPONSE_TIME
                         enum:
                         - UNSPECIFIED
                         - LEAST_CONN
@@ -3479,6 +3485,7 @@ spec:
                         - PASSTHROUGH
                         - ROUND_ROBIN
                         - LEAST_REQUEST
+                        - LEAST_RESPONSE_TIME
                         type: string
                       warmup:
                         description: Represents the warmup configuration of Service.
@@ -3829,7 +3836,7 @@ spec:
                               description: |2-
 
 
-                                Valid Options: LEAST_CONN, RANDOM, PASSTHROUGH, ROUND_ROBIN, LEAST_REQUEST
+                                Valid Options: LEAST_CONN, RANDOM, PASSTHROUGH, ROUND_ROBIN, LEAST_REQUEST, LEAST_RESPONSE_TIME
                               enum:
                               - UNSPECIFIED
                               - LEAST_CONN
@@ -3837,6 +3844,7 @@ spec:
                               - PASSTHROUGH
                               - ROUND_ROBIN
                               - LEAST_REQUEST
+                              - LEAST_RESPONSE_TIME
                               type: string
                             warmup:
                               description: Represents the warmup configuration of
@@ -4489,7 +4497,7 @@ spec:
                               description: |2-
 
 
-                                Valid Options: LEAST_CONN, RANDOM, PASSTHROUGH, ROUND_ROBIN, LEAST_REQUEST
+                                Valid Options: LEAST_CONN, RANDOM, PASSTHROUGH, ROUND_ROBIN, LEAST_REQUEST, LEAST_RESPONSE_TIME
                               enum:
                               - UNSPECIFIED
                               - LEAST_CONN
@@ -4497,6 +4505,7 @@ spec:
                               - PASSTHROUGH
                               - ROUND_ROBIN
                               - LEAST_REQUEST
+                              - LEAST_RESPONSE_TIME
                               type: string
                             warmup:
                               description: Represents the warmup configuration of
@@ -4855,7 +4864,7 @@ spec:
                                     description: |2-
 
 
-                                      Valid Options: LEAST_CONN, RANDOM, PASSTHROUGH, ROUND_ROBIN, LEAST_REQUEST
+                                      Valid Options: LEAST_CONN, RANDOM, PASSTHROUGH, ROUND_ROBIN, LEAST_REQUEST, LEAST_RESPONSE_TIME
                                     enum:
                                     - UNSPECIFIED
                                     - LEAST_CONN
@@ -4863,6 +4872,7 @@ spec:
                                     - PASSTHROUGH
                                     - ROUND_ROBIN
                                     - LEAST_REQUEST
+                                    - LEAST_RESPONSE_TIME
                                     type: string
                                   warmup:
                                     description: Represents the warmup configuration
@@ -5370,7 +5380,7 @@ spec:
                         description: |2-
 
 
-                          Valid Options: LEAST_CONN, RANDOM, PASSTHROUGH, ROUND_ROBIN, LEAST_REQUEST
+                          Valid Options: LEAST_CONN, RANDOM, PASSTHROUGH, ROUND_ROBIN, LEAST_REQUEST, LEAST_RESPONSE_TIME
                         enum:
                         - UNSPECIFIED
                         - LEAST_CONN
@@ -5378,6 +5388,7 @@ spec:
                         - PASSTHROUGH
                         - ROUND_ROBIN
                         - LEAST_REQUEST
+                        - LEAST_RESPONSE_TIME
                         type: string
                       warmup:
                         description: Represents the warmup configuration of Service.
@@ -5728,7 +5739,7 @@ spec:
                               description: |2-
 
 
-                                Valid Options: LEAST_CONN, RANDOM, PASSTHROUGH, ROUND_ROBIN, LEAST_REQUEST
+                                Valid Options: LEAST_CONN, RANDOM, PASSTHROUGH, ROUND_ROBIN, LEAST_REQUEST, LEAST_RESPONSE_TIME
                               enum:
                               - UNSPECIFIED
                               - LEAST_CONN
@@ -5736,6 +5747,7 @@ spec:
                               - PASSTHROUGH
                               - ROUND_ROBIN
                               - LEAST_REQUEST
+                              - LEAST_RESPONSE_TIME
                               type: string
                             warmup:
                               description: Represents the warmup configuration of
